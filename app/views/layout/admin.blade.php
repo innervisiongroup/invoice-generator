@@ -92,12 +92,12 @@
             </div>
         </div>        
 
-        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
         <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
         <script src="/admin/js/plugins/metisMenu/metisMenu.min.js"></script>
         <script src="/admin/js/sb-admin-2.js"></script>
         <script src="/js/script.js"></script>
+        <script src="http://code.angularjs.org/1.0.2/angular.min.js"></script>
         @yield('scripts')
     </body>
 </html>

@@ -13,4 +13,9 @@ class Invoice extends \Eloquent {
     {
         return $this->belongsTo('Category');
     }
+
+    public function options()
+    {
+        return $this->hasMany('InvoiceOption');
+    }
 }

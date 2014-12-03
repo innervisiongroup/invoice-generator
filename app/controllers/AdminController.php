@@ -124,16 +124,21 @@ class AdminController extends \BaseController {
 		return Redirect::back()->withFlashMessage('Invoice Updated !');
 	}
 
-	/**
-	 * Show the form for editing the specified resource.
-	 * GET /admin/{id}/edit
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
+	public function getInvoiceOptions($id)
 	{
-		//
+		return InvoiceOption::where('invoice_id', $id)->get();
+	}
+	public function storeInvoiceOptions($id)
+	{
+		$option = new InvoiceOption;
+		$option->invoice_id = $id;
+		$option->title = Input::get('title');
+		$option->type = Input::get('type');
+		// $option->option_group = Input::get('option_group');
+		$option->price = Input::get('price');
+		$option->save();
+
+		return $option;
 	}
 
 	/**

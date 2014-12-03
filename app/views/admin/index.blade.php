@@ -103,45 +103,47 @@
 @stop
 
 @section('scripts')
-    <script>
-        var app = angular.module("Invoices", [])
+<script>
+    var app = angular.module("Invoices", [])
 
-        app.controller("InvoicesController", function($scope, $http) {
+    app.controller("InvoicesController", function($scope, $http) {
+        $http.get('/admin/api/invoice').success(function(invoices) {
+            $scope.invoices = invoices;
+        });
+
+        $http.get('/admin/api/category').success(function(categories) {
+            $scope.categories = categories;
+        });
+
+        $scope.addInvoice = function() {
+            var invoice = {
+                title: $scope.newInvoiceTitle,
+                category_id: $scope.selectedCategory.id,
+            };
+            $http.post('/admin/api/invoice', invoice);
             $http.get('/admin/api/invoice').success(function(invoices) {
                 $scope.invoices = invoices;
             });
+            $scope.newInvoiceTitle = null;
+            $scope.selectedCategory = null;
+        };
 
+        $scope.addCategory = function() {
+            var category = {
+                name: $scope.newCategoryText,
+            };
+            $http.post('/admin/api/category', category);
             $http.get('/admin/api/category').success(function(categories) {
                 $scope.categories = categories;
             });
+            $scope.newCategoryText = null;
+        };
 
-            $scope.addInvoice = function() {
-                var invoice = {
-                    title: $scope.newInvoiceTitle,
-                    category_id: $scope.selectedCategory.id,
-                };
-                $http.post('/admin/api/invoice', invoice);
-                $http.get('/admin/api/invoice').success(function(invoices) {
-                    $scope.invoices = invoices;
-                });
-                $scope.newInvoiceTitle = null;
-                $scope.selectedCategory = null;
-            };
-
-            $scope.addCategory = function() {
-                var category = {
-                    name: $scope.newCategoryText,
-                };
-                $http.post('/admin/api/category', category);
-                $scope.categories.push(category);
-                $scope.newCategoryText = null;
-            };
-
-            $scope.delete = function(category) {
-                var index = $scope.categories.indexOf(category);
-                $scope.categories.splice(index, 1);
-                $http.post('/admin/api/category/delete', category);
-            }
-        });
-    </script>
+        $scope.delete = function(category) {
+            var index = $scope.categories.indexOf(category);
+            $scope.categories.splice(index, 1);
+            $http.post('/admin/api/category/delete', category);
+        }
+    });
+</script>
 @stop

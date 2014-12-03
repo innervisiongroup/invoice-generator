@@ -21,9 +21,14 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth.basic'), function()
         Route::get('invoice', function() {
             return Invoice::with('category')->get();
         });
+        
+        Route::get('invoice/{id}/options', 'AdminController@getInvoiceOptions');
+        Route::post('invoice/{id}/options', 'AdminController@storeInvoiceOptions');
+        
         Route::get('category', function() {
             return Category::all();
         });
+        
         Route::post('invoice', 'AdminController@storeInvoice');
         Route::post('invoice/delete', 'AdminController@deleteInvoice');
         Route::post('category', 'AdminController@storeCategory');

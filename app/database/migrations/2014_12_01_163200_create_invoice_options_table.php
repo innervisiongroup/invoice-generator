@@ -15,11 +15,12 @@ class CreateInvoiceOptionsTable extends Migration {
 		Schema::create('invoice_options', function(Blueprint $table)
 		{
 			$table->increments('id');
+			$table->integer('invoice_id');
 			$table->string('title');
 			$table->string('type');
 			$table->string('option_group')->nullable();
 			$table->integer('weight');
-			$table->integer('price');
+			$table->integer('price')->nullable();
 			$table->timestamps();
 		});
 	}
