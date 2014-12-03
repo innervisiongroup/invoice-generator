@@ -7,6 +7,11 @@ use Illuminate\Auth\Reminders\RemindableInterface;
 
 class User extends Eloquent implements UserInterface, RemindableInterface {
 
+	public static $rules = [
+        'username' => 'required|min:2',
+        'password' => 'required|confirmed',
+    ];
+    
 	use UserTrait, RemindableTrait;
 
 	/**

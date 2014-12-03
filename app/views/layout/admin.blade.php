@@ -56,10 +56,10 @@
                         </a>
                         <ul class="dropdown-menu dropdown-user">
                             <li>
-                                <a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                                <a href="{{ URL::to('admin/profile') }}"><i class="fa fa-user fa-fw"></i> Admin Profile</a>
                             </li>
                             <li>
-                                <a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                                <a href="{{ URL::to('admin/settings') }}"><i class="fa fa-gear fa-fw"></i> Settings</a>
                             </li>
                         </ul>
                         <!-- /.dropdown-user -->

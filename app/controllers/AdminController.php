@@ -2,12 +2,6 @@
 
 class AdminController extends \BaseController {
 
-	/**
-	 * Display a listing of the resource.
-	 * GET /admin
-	 *
-	 * @return Response
-	 */
 	public function index()
 	{
 		return View::make('admin.index');
@@ -58,38 +52,76 @@ class AdminController extends \BaseController {
 		return Redirect::back()->withFlashMessage('Settings Updated !');
 	}
 
-	/**
-	 * Show the form for creating a new resource.
-	 * GET /admin/create
-	 *
-	 * @return Response
-	 */
-	public function create()
+	public function getProfile()
 	{
-		//
+		return View::make('admin.profile');
 	}
 
-	/**
-	 * Store a newly created resource in storage.
-	 * POST /admin
-	 *
-	 * @return Response
-	 */
-	public function store()
+	public function updateProfile()
 	{
-		//
+		$validator = Validator::make($data = Input::all(), User::$rules);
+
+        if ($validator->fails())
+        {
+            return Redirect::back()->withErrors($validator)->withInput();
+        }
+		
+		Auth::user()->username = Input::get('username');
+		Auth::user()->password = Hash::make(Input::get('password'));
+		Auth::user()->save();
+
+		return Redirect::back()->withFlashMessage('Settings Updated !');
 	}
 
-	/**
-	 * Display the specified resource.
-	 * GET /admin/{id}
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function show($id)
+	public function storeInvoice()
 	{
-		//
+		$invoice = new Invoice;
+		$invoice->category_id = Input::get('category_id');
+		$invoice->title = Input::get('title');
+		$invoice->slug = Str::slug(Input::get('title'));
+		$invoice->save();
+		return $invoice;
+	}
+
+	public function storeCategory()
+	{
+		$category = new Category;
+		$category->name = Input::get('name');
+		$category->save();
+		return $category;
+	}
+
+	public function editInvoice($id)
+	{
+		$invoice = Invoice::find($id);
+		$categories = Category::lists('name', 'id');
+		return View::make('admin.invoice.edit')
+			->with('invoice', $invoice)
+			->with('categories', $categories);
+	}
+
+	public function updateInvoice($id)
+	{
+		$validator = Validator::make($data = Input::all(), Invoice::$rules);
+
+        if ($validator->fails())
+        {
+            return Redirect::back()->withErrors($validator)->withInput();
+        }
+
+		$invoice = Invoice::find($id);
+		if (Input::hasFile('image'))
+		{
+			$file            = Input::file('image');
+			$destinationPath = public_path().'/uploads/';
+			$image_filename  = str_random(6) . '_' . $file->getClientOriginalName();
+			$uploadSuccess   = $file->move($destinationPath, $image_filename);
+			$invoice->image = '/uploads/'.$image_filename;
+		}
+		$invoice->category_id = Input::get('category_id');
+		$invoice->title = Input::get('title');
+		$invoice->save();
+		return Redirect::back()->withFlashMessage('Invoice Updated !');
 	}
 
 	/**
