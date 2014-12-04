@@ -61,7 +61,8 @@
                                     {{ Form::label('title', 'Title') }}
                                     {{ Form::text('title', null, ['class'=>'form-control', 'placeholder'=>'Invoice\'s Title', 'ng-model'=>'newInvoiceTitle']) }}
                                     {{ Form::label('category_id', 'Category') }}
-                                    <select name="category_id" id="category_id" class="form-control" ng-model="selectedCategory" ng-options="category.name for category in categories">
+                                    <select name="category_id" id="category_id" class="form-control" ng-model="selectedCategory" ng-options="category.id as category.name for category in categories">
+                                        <option value="">Select category</option>
                                     </select>
                                 </div>
                                 <div class="modal-footer">
@@ -118,7 +119,7 @@
         $scope.addInvoice = function() {
             var invoice = {
                 title: $scope.newInvoiceTitle,
-                category_id: $scope.selectedCategory.id,
+                category_id: $scope.selectedCategory,
             };
             $http.post('/admin/api/invoice', invoice);
             $http.get('/admin/api/invoice').success(function(invoices) {
