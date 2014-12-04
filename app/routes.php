@@ -1,6 +1,8 @@
 <?php
 
 Route::get('/', ['as' => 'home', 'uses' => 'InvoiceController@index']);
+Route::get('invoice/{slug}', 'InvoiceController@show');
+Route::post('generate', ['as' => 'generate', 'uses' => 'InvoiceController@result']);
 
 Route::group(array('prefix' => 'admin', 'before' => 'auth.basic'), function()
 {
@@ -24,6 +26,10 @@ Route::group(array('prefix' => 'admin', 'before' => 'auth.basic'), function()
         
         Route::get('invoice/{id}/options', 'AdminController@getInvoiceOptions');
         Route::post('invoice/{id}/options', 'AdminController@storeInvoiceOptions');
+        Route::post('invoice/{id}/options/update', 'AdminController@updateInvoiceOption');
+
+        Route::post('option/weight', 'AdminController@updateOptionWeight');
+        Route::post('option/delete', 'AdminController@deleteOption');
         
         Route::get('category', function() {
             return Category::all();

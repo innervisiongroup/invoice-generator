@@ -23,13 +23,26 @@
     </head>
     
     <body>
-        @include('layout.bootstrap3.menu')
         <div class="container">
-            <div class="row">
-                @yield('content')
-            </div>
-        </div>        
+            @yield('content')
+        </div>
+        
 
+        <footer>
+            <nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6 col-md-offset-3">
+                            <div class="text-center">Created by <a href="http://innervisionweb.com" target="_blank">Inner Vision Web</a></div>
+                            <div class="text-center">Build with <a href="http://laravel.com" target="_blank">Laravel Framework</a></div>
+                        </div>
+                        <div class="col-md-3 text-right">
+                            <a href="{{ URL::to('admin/index') }}">Admin Panel</a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </footer>    
 
         <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>

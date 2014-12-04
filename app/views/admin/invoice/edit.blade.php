@@ -7,8 +7,24 @@
             outline: none;
             width: 100%;
         }
-        .draggable{
+        .handle{
             cursor: ns-resize;
+        }
+        .fa-trash{
+            margin-top: 7px;
+            cursor: pointer;
+        }
+        .form-inline{
+            margin-bottom: 20px;
+        }
+        .edit{
+            display: none;
+        }
+        .editing .view{
+            display: none;
+        }
+        .editing .edit{
+            display: inline-block;
         }
     </style>
 @stop
@@ -63,38 +79,16 @@
     <div class="row" ng-controller="InvoicesOptionsController">
         <div class="col-md-12">
             <div class="row">
-                <div ui-sortable="sortableOptions" ng-model="options" class="col-md-12">
-                    <div class="row" ng-repeat="option in options">
-                        <div class="col-md-12 draggable">
-                            <div class="well well-sm">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <strong>Type :</strong> @{{ option.type }}
-                                    </div>
-                                    <div class="col-md-4">
-                                        <strong>Name / Title :</strong> @{{ option.title }}
-                                    </div>
-                                    <div class="col-md-4" ng-hide="!option.price">
-                                        <strong>Default Price :</strong> @{{ option.price }} €
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
                 <div class="col-md-12">
-                    <form ng-submit="addOption()" class="form-inline">
+                    <form ng-submit="addOption()" class="form-inline" name="addOptionForm">
                         <div class="form-group">
                             <label class="sr-only">Title</label>
                             <input ng-model="newOptionTitle" type="text" class="form-control" placeholder="Title" required>
                         </div>
                         <div class="form-group">
                             <label class="sr-only">Type</label>
-                            <select ng-model="newOptionType" class="form-control" required>
-                                <option value="checkbox">Checkbox</option>
-                                <option value="radio">Radio Buttons</option>
+                            <select ng-model="newOptionType" class="form-control" required ng-options="method.value as method.name for method in methods">
+                            <option value="">Select Input Type</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -103,8 +97,44 @@
                                 <div class="input-group-addon"><i class="fa fa-euro"></i></div>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-default">Add Option</button>
+                        <button type="submit" ng-disabled="!addOptionForm.$valid" class="btn btn-default">Add Option</button>
                     </form>
+                </div>
+            </div>
+            <div class="row">
+                <div ui-sortable="sortableOptions" ng-model="options" class="col-md-12 list">
+                    <div class="row line" ng-repeat="option in options" ng-dblclick="toggleEditMode()" option-id="@{{ option.id }}">
+                        <div class="col-md-12 draggable">
+                            <div class="row">
+                                <div class="col-md-11">
+                                    <div class="well well-sm">
+                                        <div class="row">
+                                            <div class="col-md-1 handle">
+                                                <i class="fa fa-arrows-v"></i>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="view">
+                                                    <strong>Title :</strong> @{{ option.title }}
+                                                </div>
+                                                <form class="edit" ng-submit="updateOption(option)">
+                                                    <input class="form-control" type="text" ng-model="option.title"/>
+                                                </form>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <strong>Type :</strong> @{{ option.type }}
+                                            </div>
+                                            <div class="col-md-3" ng-hide="!option.price">
+                                                <strong>Default Price :</strong> @{{ option.price }} €
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-1 text-center">
+                                    <span ng-click="delete(option)"><i class="fa fa-trash fa-2x"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -119,10 +149,26 @@
 <script>
     var app = angular.module("InvoicesOptions", ['ui'])
 
+    app.directive('ngEnter', function () {
+        return function (scope, element, attrs) {
+            element.bind("keydown keypress", function (event) {
+                if(event.which === 13) {
+                    scope.$apply(function (){
+                        scope.$eval(attrs.ngEnter);
+                    });
+
+                    event.preventDefault();
+                }
+            });
+        };
+    });
+
     app.controller("InvoicesOptionsController", function($scope, $http) {
         $http.get('/admin/api/invoice/{{$invoice->id}}/options').success(function(options) {
             $scope.options = options;
         });
+
+        $scope.methods = [{name:'Checkbox', value:'checkbox'}, {name:'Radio Button', value:'radio'}];
 
         $scope.addOption = function() {
             var option = {
@@ -131,19 +177,47 @@
                 price: $scope.newOptionPrice,
             };
             $http.post('/admin/api/invoice/{{$invoice->id}}/options', option);
-            $scope.options.push(option);
+            $http.get('/admin/api/invoice/{{$invoice->id}}/options').success(function(options) {
+                $scope.options = options;
+            });
 
             $scope.newOptionTitle = null;
             $scope.newOptionType = null;
             $scope.newOptionPrice = null;
         };
 
-        $scope.sortableOptions = {
-            axis: 'y'
+        $scope.toggleEditMode = function(){
+            $(event.target).closest('.col-md-6').toggleClass('editing');
+            $(event.target).find('input').focus();
+        };
+        $scope.updateOption = function(option){
+            $scope.toggleEditMode();
+            $http.post('/admin/api/invoice/{{$invoice->id}}/options/update', option);
         };
 
-    });
+        $scope.delete = function(option) {
+            var index = $scope.options.indexOf(option);
+            $scope.options.splice(index, 1);
+            $http.post('/admin/api/option/delete', option);
+        }
 
-    angular.bootstrap(document, ['InvoicesOptions']);
+        $scope.sortableOptions = {
+            axis: 'y',
+            handle: '.handle',
+            update: function(e, ui) {
+                var i = 0;
+                $('.list .line').each(function(index, el) {
+                    $(this).attr('weight', i++);
+                    var weight = $(this).attr('weight');
+                    var optionid = $(this).attr('option-id');
+                    var option = {
+                        weight: $(this).attr('weight'),
+                        id: $(this).attr('option-id'),
+                    };
+                    $http.post('/admin/api/option/weight', option);
+                });
+            },
+        };
+    });
 </script>
 @stop

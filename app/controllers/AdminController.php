@@ -126,7 +126,7 @@ class AdminController extends \BaseController {
 
 	public function getInvoiceOptions($id)
 	{
-		return InvoiceOption::where('invoice_id', $id)->get();
+		return InvoiceOption::where('invoice_id', $id)->orderBy('weight')->get();
 	}
 	public function storeInvoiceOptions($id)
 	{
@@ -140,29 +140,28 @@ class AdminController extends \BaseController {
 
 		return $option;
 	}
-
-	/**
-	 * Update the specified resource in storage.
-	 * PUT /admin/{id}
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function update($id)
+	public function updateInvoiceOption()
 	{
-		//
+		$option = InvoiceOption::find(Input::get('id'));
+		$option->title = Input::get('title');
+		$option->save();
+
+		return $option;
 	}
 
-	/**
-	 * Remove the specified resource from storage.
-	 * DELETE /admin/{id}
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function destroy($id)
+	public function updateOptionWeight()
 	{
-		//
+		$option = InvoiceOption::find(Input::get('id'));
+		$option->weight = Input::get('weight');
+		$option->save();
+
+		return $option;
+	}
+
+	public function deleteOption()
+	{
+		$option = InvoiceOption::find(Input::get('id'));
+		$option->delete();
 	}
 
 }
