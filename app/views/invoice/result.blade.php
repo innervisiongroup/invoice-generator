@@ -77,21 +77,25 @@
                 </div>
             </div>
 
-            <table class="table table-striped table-bordered">
-                @foreach ($input['radio'] as $option)
-                    <tr>
-                        <td>{{ $option }}</td>
-                    </tr>
-                @endforeach
-            </table>
+            @if (isset($input['radio']))
+                <table class="table table-striped table-bordered">
+                    @foreach ($input['radio'] as $option)
+                        <tr>
+                            <td>{{ $option }}</td>
+                        </tr>
+                    @endforeach
+                </table>
+            @endif
 
-            <table class="table table-striped table-bordered">
-                @foreach ($input['checkbox'] as $option)
-                    <tr>
-                        <td>{{ $option }}</td>
-                    </tr>
-                @endforeach
-            </table>
+            @if (isset($input['checkbox']))
+                <table class="table table-striped table-bordered">
+                    @foreach ($input['checkbox'] as $option)
+                        <tr>
+                            <td>{{ $option }}</td>
+                        </tr>
+                    @endforeach
+                </table>
+            @endif
 
         {{ Form::close() }}
     </div>
