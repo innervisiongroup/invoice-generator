@@ -29,7 +29,7 @@
 
             <div class="row">
                 <div class="col-md-4">
-                    <img src="{{ $invoice->image }}" alt="">
+                    <img src="{{ $invoice->image ?: Setting::first()->main_logo }}" alt="">
                 </div>
                 <div class="col-md-4 col-md-offset-4">
                     {{ Form::label('date', 'Date :') }}
