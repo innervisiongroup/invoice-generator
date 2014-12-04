@@ -121,6 +121,7 @@
                 category_id: $scope.selectedCategory.id,
             };
             $http.post('/admin/api/invoice', invoice);
+            $scope.invoices.push(invoice);
             $http.get('/admin/api/invoice').success(function(invoices) {
                 $scope.invoices = invoices;
             });
@@ -133,6 +134,7 @@
                 name: $scope.newCategoryText,
             };
             $http.post('/admin/api/category', category);
+            $scope.categories.push(category);
             $http.get('/admin/api/category').success(function(categories) {
                 $scope.categories = categories;
             });

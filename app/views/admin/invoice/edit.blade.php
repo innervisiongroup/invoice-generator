@@ -177,6 +177,7 @@
                 price: $scope.newOptionPrice,
             };
             $http.post('/admin/api/invoice/{{$invoice->id}}/options', option);
+            $scope.options.push(option);
             $http.get('/admin/api/invoice/{{$invoice->id}}/options').success(function(options) {
                 $scope.options = options;
             });
