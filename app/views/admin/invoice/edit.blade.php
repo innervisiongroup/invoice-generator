@@ -149,20 +149,6 @@
 <script>
     var app = angular.module("InvoicesOptions", ['ui'])
 
-    app.directive('ngEnter', function () {
-        return function (scope, element, attrs) {
-            element.bind("keydown keypress", function (event) {
-                if(event.which === 13) {
-                    scope.$apply(function (){
-                        scope.$eval(attrs.ngEnter);
-                    });
-
-                    event.preventDefault();
-                }
-            });
-        };
-    });
-
     app.controller("InvoicesOptionsController", function($scope, $http) {
         $http.get('/admin/api/invoice/{{$invoice->id}}/options').success(function(options) {
             $scope.options = options;
@@ -176,11 +162,10 @@
                 type: $scope.newOptionType,
                 price: $scope.newOptionPrice,
             };
-            $http.post('/admin/api/invoice/{{$invoice->id}}/options', option);
-            $http.get('/admin/api/invoice/{{$invoice->id}}/options').success(function(options) {
-                $scope.options = options;
+
+            $http.post('/admin/api/invoice/{{$invoice->id}}/options', option).success(function (data, status, headers) {
+                $scope.options.push(data);
             });
-            $scope.options.push(option);
 
             $scope.newOptionTitle = null;
             $scope.newOptionType = null;

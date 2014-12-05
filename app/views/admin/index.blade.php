@@ -121,11 +121,9 @@
                 title: $scope.newInvoiceTitle,
                 category_id: $scope.selectedCategory,
             };
-            $http.post('/admin/api/invoice', invoice);
-            $http.get('/admin/api/invoice').success(function(invoices) {
-                $scope.invoices = invoices;
+            $http.post('/admin/api/invoice', invoice).success(function (data, status, headers) {
+                $scope.invoices.push(data);
             });
-            $scope.invoices.push(invoice);
             $scope.newInvoiceTitle = null;
             $scope.selectedCategory = null;
         };
@@ -134,11 +132,9 @@
             var category = {
                 name: $scope.newCategoryText,
             };
-            $http.post('/admin/api/category', category);
-            $http.get('/admin/api/category').success(function(categories) {
-                $scope.categories = categories;
+            $http.post('/admin/api/category', category).success(function (data, status, headers) {
+                $scope.categories.push(data);
             });
-            $scope.categories.push(category);
             $scope.newCategoryText = null;
         };
 
