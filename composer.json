@@ -7,7 +7,7 @@
 	"require": {
 		"laravel/framework": "4.2.*",
 		"way/generators": "2.*",
-		"barryvdh/laravel-dompdf": "0.4.*"
+		"cviebrock/eloquent-sluggable": "~2.0"
 	},
 	"autoload": {
 		"classmap": [

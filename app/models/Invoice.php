@@ -1,7 +1,17 @@
 <?php
 
-class Invoice extends \Eloquent {
+use Cviebrock\EloquentSluggable\SluggableInterface;
+use Cviebrock\EloquentSluggable\SluggableTrait;
+
+class Invoice extends \Eloquent implements SluggableInterface {
 	protected $fillable = ['category_id', 'title', 'image'];
+
+    use SluggableTrait;
+
+    protected $sluggable = array(
+        'build_from' => 'title',
+        'save_to'    => 'slug',
+    );
 
     public static $rules = [
         'category_id' => 'required|integer',

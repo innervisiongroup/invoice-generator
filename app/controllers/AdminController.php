@@ -78,7 +78,6 @@ class AdminController extends \BaseController {
 		$invoice = new Invoice;
 		$invoice->category_id = Input::get('category_id');
 		$invoice->title = Input::get('title');
-		$invoice->slug = Str::slug(Input::get('title'));
 		$invoice->save();
 		return $invoice;
 	}
